@@ -1,5 +1,5 @@
 /*!
-Permutation Library. 
+Permutation Library.
 
 Calculation of a permutation from a number and back:
 ```rust
@@ -7,7 +7,8 @@ use eprmutate::permutation;
 use eprmutate::permutation_number;
 
 let p = permutation(u128::MAX);
-assert_eq!(permutation_number(&p), Some(u128::MAX));
+
+assert_eq!(permutation_number(&p), Some(u128::MAX)); // object p doesn't know the number
 
 assert_eq!( p.v, [
     18, 13, 11, 8, 27, 16, 20, 22, 12, 24, 9, 1, 30, 3, 15, 23, 25, 2, 28, 19, 14, 29, 5, 10, 17,
@@ -56,36 +57,44 @@ assert_eq!(permutation(6).fix_length(3), None);
 
 */
 
+/// holds a Vec<u8> for the permutation
 #[derive(Debug, PartialEq)]
 pub struct Permutation {
- pub v : Vec<u8>,
+ pub v: Vec<u8>,
 }
 
 impl Permutation {
- pub fn fix_length( &self, len: u8) -> Option<Vec<u8>> {
+ /// creates a fixed length representation of the permutation
+ pub fn fix_length(&self, len: u8) -> Option<Vec<u8>> {
   let mut v = self.v.clone();
-  if ! fix_length(len, &mut v) { return None;}
-  Some( v)
+  if !fix_length(len, &mut v) {
+   return None;
+  }
+  Some(v)
  }
 }
 
+/// holds the quotient and reminder after a division
 #[derive(Debug, PartialEq)]
 pub struct DivRem {
  div: Div,
  rem: Rem,
 }
 
+/// a quotient
 #[derive(Debug, PartialEq)]
 struct Div {
  div: u128,
 }
 
+/// a reminder
 #[derive(Debug, PartialEq)]
 struct Rem {
  rem: u8,
 }
 
 impl DivRem {
+ /// performs the calculation of quotient and reminder
  fn divrem(nominator: u128, denominator: u8) -> Self {
   let denominator = denominator as u128;
   let div = Div {
@@ -97,13 +106,14 @@ impl DivRem {
  }
 }
 
+/// holds the permutation reminders
 #[derive(Debug, PartialEq)]
 pub struct PermutationRemainder {
  vr: Vec<Rem>,
 }
 
-/// holds the permutation reminders
 impl PermutationRemainder {
+ /// Creates a permutation remainder from a number.
  pub fn new(mut u: u128) -> PermutationRemainder {
   let mut vr = Vec::<Rem>::new();
 
@@ -119,6 +129,7 @@ impl PermutationRemainder {
   PermutationRemainder { vr }
  }
 
+ /// Computes the next permutation remainders. The corresponding permutation number can exceed u128::MAX and cannot be computed.
  pub fn next_unsafe(&self) -> PermutationRemainder {
   let mut vr = Vec::<Rem>::new();
 
@@ -176,12 +187,14 @@ impl PermutationRemainder {
   Some(ret)
  }
 
+ /// Computes the next permutation remainders. The corresponding permutation number can not exceed u128::MAX. If that would be the case, None is returned.
  pub fn next(&self) -> Option<PermutationRemainder> {
   let ret = self.next_unsafe();
   ret.permutation_number()?;
   Some(ret)
  }
 
+ /// Computes the previous permutation remainders. The corresponding permutation number can not fall under 0. If that would be the case, None is returned.
  pub fn prev(&self) -> Option<PermutationRemainder> {
   let mut vr = Vec::<Rem>::new();
 
@@ -208,6 +221,7 @@ impl PermutationRemainder {
   Some(PermutationRemainder { vr })
  }
 
+ /// Computes a permutation from the permutation remainders.
  pub fn permutation(&self) -> Permutation {
   let remainders = &self.vr;
 
@@ -225,11 +239,11 @@ impl PermutationRemainder {
    }
   }
 
-  Permutation{ v: ret}
+  Permutation { v: ret }
  }
 
+ /// Computes a permutation remainder from a permutation.
  pub fn from_permutation(p: &Permutation) -> Option<Self> {
-
   if 0 == p.v.len() {
    return None;
   }

@@ -7,7 +7,8 @@ use eprmutate::permutation;
 use eprmutate::permutation_number;
 
 let p = permutation(u128::MAX);
-assert_eq!(permutation_number(&p), Some(u128::MAX));
+
+assert_eq!(permutation_number(&p), Some(u128::MAX)); // p doesn't know the number
 
 assert_eq!( p.v, [
     18, 13, 11, 8, 27, 16, 20, 22, 12, 24, 9, 1, 30, 3, 15, 23, 25, 2, 28, 19, 14, 29, 5, 10, 17,
