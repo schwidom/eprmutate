@@ -1,10 +1,11 @@
 [package]
 name = "eprmutate"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["Frank Schwidom"]
 description = "Permutation Library"
 documentation = "https://docs.rs/eprmutate"
+license = "MIT"
 license-file = "LICENSE"
 homepage = "https://github.com/schwidom/eprmutate"
 readme = "README.md"
